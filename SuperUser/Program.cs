@@ -2,20 +2,8 @@
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        private static void Main(string[] program)
         {
-            string program = string.Empty;
-            if (args.Length > 0)
-            {
-                foreach (var arg in args)
-                {
-                    program += arg + " ";
-                }
-            }
-            else
-            {
-                program = "cmd.exe";
-            }
             Elevate.Run(program);
         }
     }

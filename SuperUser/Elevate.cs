@@ -7,8 +7,21 @@ namespace SuperUser
 {
     internal static class Elevate
     {
-        public static void Run(string program)
+        public static void Run(string[] args)
         {
+            string program = string.Empty;
+            if (args.Length > 0)
+            {
+                foreach (var arg in args)
+                {
+                    program += arg + " ";
+                }
+            }
+            else
+            {
+                program = "cmd.exe";
+            }
+
             if (AdminSuper.IsSystem()) return;
             Process process = Process.GetCurrentProcess();
             if (process.MainModule != null)
