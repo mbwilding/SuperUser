@@ -4,7 +4,19 @@
     {
         private static void Main(string[] args)
         {
-            Elevate.Run(args.Length == 0 ? "cmd.exe" : args[0]);
+            string program = string.Empty;
+            if (args.Length > 0)
+            {
+                foreach (var arg in args)
+                {
+                    program += arg + " ";
+                }
+            }
+            else
+            {
+                program = "cmd.exe";
+            }
+            Elevate.Run(program);
         }
     }
 }
