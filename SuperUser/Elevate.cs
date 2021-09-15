@@ -9,19 +9,7 @@ namespace SuperUser
     {
         public static void Run(string[] args)
         {
-            string program = string.Empty;
-            if (args.Length > 0)
-            {
-                foreach (var arg in args)
-                {
-                    program += arg + " ";
-                }
-            }
-            else
-            {
-                program = "cmd.exe";
-            }
-
+            string program = ArrayToString(args);
             if (AdminSuper.IsSystem()) return;
             Process process = Process.GetCurrentProcess();
             if (process.MainModule != null)
@@ -41,6 +29,23 @@ namespace SuperUser
                     );
             }
             Environment.Exit(0);
+        }
+
+        private static string ArrayToString(string[] args)
+        {
+            string program = string.Empty;
+            if (args.Length > 0)
+            {
+                foreach (var arg in args)
+                {
+                    program += arg + " ";
+                }
+            }
+            else
+            {
+                program = "cmd.exe";
+            }
+            return program;
         }
     }
 }

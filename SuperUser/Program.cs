@@ -2,9 +2,9 @@
 {
     internal class Program
     {
-        private static void Main(string[] program)
+        private static void Main(string[] args)
         {
-            Elevate.Run(program);
+            Elevate.Run(args);
         }
     }
 }
