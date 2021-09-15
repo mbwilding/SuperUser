@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
-using System.Text;
 using System.Threading.Tasks;
 
 // ReSharper disable SuggestVarOrType_BuiltInTypes
