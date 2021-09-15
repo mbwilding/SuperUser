@@ -37,7 +37,7 @@ namespace SuperUser
 
         #endregion
 
-        private static int Timeout { get; set; } = 100;
+        private const int Timeout = 100;
 
         public static bool IsAdministrator()
         {
