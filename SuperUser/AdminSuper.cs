@@ -20,6 +20,14 @@ namespace SuperUser
         private static SecurityAttributes _dummySa; // = new SecurityAttributes();
         private static IntPtr _hProc, _hToken, _hDupToken, _pEnvBlock;
 
+        public static bool IsSystem()
+        {
+            string host = Environment.MachineName.ToLower() + @"$";
+            if (Environment.UserName.ToLower() == "system" || Environment.UserName.ToLower() == host)
+                return true;
+            return false;
+        }
+
         public static void RunWithTokenOf(string processName, bool ofActiveSessionOnly, string exeToRun, string arguments, string workingDir = "")
         {
             var piDs = new List<int>();

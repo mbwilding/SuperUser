@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace SuperUser
@@ -9,8 +10,7 @@ namespace SuperUser
     {
         public static void Run(string program)
         {
-            string host = Environment.MachineName.ToLower() + @"$";
-            if (Environment.UserName.ToLower() == "system" || Environment.UserName.ToLower() == host) return;
+            if (AdminSuper.IsSystem()) return;
             Process process = Process.GetCurrentProcess();
             if (process.MainModule != null)
             {

