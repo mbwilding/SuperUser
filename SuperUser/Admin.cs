@@ -102,10 +102,5 @@ namespace SuperUser
                 }
             }
         }
-
-        private static string PowershellWhitespace(string text)
-        {
-            return text.Replace(" ", "` ");
-        }
     }
 }
