@@ -46,12 +46,12 @@ namespace SuperUser
                 .IsInRole(WindowsBuiltInRole.Administrator);
         }
 
-        public static async Task Run(string filename)
+        public static async Task Run(string filename, string program)
         {
-            try { await Process(filename); } catch { /*ignored*/ }
+            try { await Process(filename, program); } catch { /*ignored*/ }
         }
 
-        private static async Task Process(string filename)
+        private static async Task Process(string filename, string program)
         {
             DirectoryInfo temporaryFolder =
                 new DirectoryInfo(
@@ -68,7 +68,7 @@ namespace SuperUser
                 CustomDestination=CustInstDestSectionAllUsers
                 RunPreSetupCommands=RunPreSetupCommandsSection
                 [RunPreSetupCommandsSection]
-                powershell.exe ""Start-Process {filename} -Verb RunAs""
+                powershell.exe ""Start-Process {filename} -Args '{program}' -Verb RunAs""
                 taskkill /IM cmstp.exe /F
                 [CustInstDestSectionAllUsers]
                 49000,49001=AllUSer_LDIDSection, 7
