@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace SuperUser
@@ -25,7 +25,8 @@ namespace SuperUser
                     true,
                     program,
                     string.Empty,
-                    RuntimeEnvironment.GetRuntimeDirectory());
+                    Path.GetPathRoot(Environment.SystemDirectory)
+                    );
             }
             Environment.Exit(0);
         }
