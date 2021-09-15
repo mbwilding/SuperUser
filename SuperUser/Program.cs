@@ -1,9 +1,4 @@
-﻿// ReSharper disable once StringLiteralTypo
-
-using System;
-using System.IO;
-
-namespace SuperUser
+﻿namespace SuperUser
 {
     internal class Program
     {
