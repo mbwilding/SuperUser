@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -207,11 +206,6 @@ namespace SuperUser
         }
 
         #region WIN32 API
-        private static string WinApiLastErrMsg()
-        {
-            var err = Marshal.GetLastWin32Error();
-            return new Win32Exception(err).Message + " (Error code: " + err + ")";
-        }
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]

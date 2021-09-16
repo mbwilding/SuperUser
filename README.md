@@ -1,5 +1,4 @@
 # SuperUser
-SuperUser.exe directory path cannot contain spaces<br><br>
 
 Run programs as "nt authority\system"<br>
 Double click for "cmd.exe"<br>

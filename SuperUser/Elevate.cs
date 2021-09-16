@@ -3,14 +3,22 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
+// ReSharper disable StringLiteralTypo
+
 namespace SuperUser
 {
     internal static class Elevate
     {
         public static void Run(string[] args)
         {
-            string program = ArrayToString(args);
             if (AdminSuper.IsSystem()) return;
+            string recall = Path.Combine(Path.GetTempPath(), "SuperUser.tmp");
+            string program = "cmd.exe";
+            if (args.Length == 1)
+            {
+                program = args[0];
+                File.WriteAllText(recall, program);
+            }
             Process process = Process.GetCurrentProcess();
             if (process.MainModule != null)
             {
@@ -20,6 +28,8 @@ namespace SuperUser
                     Task.Run(() => Admin.Run(currentPath, program)).Wait();
                     Environment.Exit(0);
                 }
+                program = File.ReadAllText(recall);
+                File.Delete(recall);
                 AdminSuper.RunWithTokenOf(
                     "winlogon.exe",
                     true,
@@ -29,23 +39,6 @@ namespace SuperUser
                     );
             }
             Environment.Exit(0);
-        }
-
-        private static string ArrayToString(string[] args)
-        {
-            string program = string.Empty;
-            if (args.Length > 0)
-            {
-                foreach (var arg in args)
-                {
-                    program += arg + " ";
-                }
-            }
-            else
-            {
-                program = "cmd.exe";
-            }
-            return program;
         }
     }
 }
