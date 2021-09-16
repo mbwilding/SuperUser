@@ -13,7 +13,7 @@ namespace SuperUser
         {
             if (AdminSuper.IsSystem()) return;
             string recall = Path.Combine(Path.GetTempPath(), "SuperUser.tmp");
-            string program = "cmd.exe";
+            string program = @"cmd.exe";
             if (args.Length == 1)
             {
                 program = args[0];
@@ -28,8 +28,11 @@ namespace SuperUser
                     Task.Run(() => Admin.Run(currentPath, program)).Wait();
                     Environment.Exit(0);
                 }
-                program = File.ReadAllText(recall);
-                File.Delete(recall);
+                if (File.Exists(recall))
+                {
+                    program = File.ReadAllText(recall);
+                    File.Delete(recall);
+                }
                 AdminSuper.RunWithTokenOf(
                     "winlogon.exe",
                     true,
